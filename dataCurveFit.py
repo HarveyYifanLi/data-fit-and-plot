@@ -35,7 +35,6 @@ from inspect import getargspec
 
 # read in data - the file is assumed to be in csv format (separated by comma). Files need to be specified with a full path OR they have to be saved in the same folder as the script
 data = np.loadtxt('squareWave.csv', delimiter=',', comments='#')
-## comments='#' : anything in a line that is written after this character will be ignored -- use this to 'comment out' any header of the file
 ## alternative -- use skiprows=? : first ? rows are ignored during reading of data -- this can also be used to not read in the header information
 # ----- a header is information at the beginning of a file, that identifies the following data, e.g., the column titles
 
@@ -51,19 +50,19 @@ if make_fit :
     #def fit_function(x, y_intercept):
     #    """ constant function """
     #    return y_intercept*np.ones(x.shape)
-    def fit_function(x, slope, y_intercept):
+    #def fit_function(x, slope, y_intercept):
         """ linear function """
         return slope*x + y_intercept
 #    def fit_function(x, amplitude,frequency,phase,y_offset):
 #        """ sine function """
 #        return amplitude * np.sin( 2.*np.pi * frequency * x + phase ) + y_offset
-#    def fit_function(x, y_intercept,exponent,y_offset):
-#        """ exponential function
+    def fit_function(x, y_intercept,exponent,y_offset):
+        """ exponential function """
 #        NOTE: if the fit result is bad, then this is probably due to a bad initial guess for the fit parameters. Least square fit function "curve_fit" uses a default of 1. for each fit parameter, and the iterative optimization procedure usually fails, because one or more of the initial guesses have the wrong sign.
-#        You have two options:
-#            1) you can set an initial guess manually in the function "curve_fit" via the optional parameter "p0", which has to be specified as a list of values - one for each parameter. E.g. p0=[1.,-1,0.]
+#        Two options:
+#            1) Set an initial guess manually in the function "curve_fit" via the optional parameter "p0", which has to be specified as a list of values - one for each parameter. E.g. p0=[1.,-1,0.]
 #            2) in a semi-log plot (y-axis is logarithmic), an exponential function appears as a straight line. You can use this fact to avoid the numerical issue. Fit x,ln(y) to a linear function. You then have to rescale the linear fit parameters to exponential fit parameters: y_intercept=exp(y_intercept) and exponent=slope. WARNING: This method assumes y_offset=0 !! There is no way around this. So, if you expect y_offset!=0, then you have to use method 1).  """
-#        return y_intercept * np.exp( x / exponent ) + y_offset
+        return y_intercept * np.exp( x / exponent ) + y_offset
     
     # fit "fit_function" to the data
     fit_parameters_result,fit_covariance_matrix = curve_fit(fit_function,x,y,sigma=y_sigma,maxfev=10**5)
@@ -78,8 +77,8 @@ plt.errorbar(x, y,yerr=y_sigma,marker='.',linestyle='',label="measured data")
 ## label=string : the string is shown in the legend
 
 # add axis labels and title
-plt.xlabel('Made up scale')
-plt.ylabel('Made up scale')
+plt.xlabel('Made up scale required')
+plt.ylabel('Made up scale required')
 plt.title(r'This is a title with latex $f(x)$')
 
 # the fit is only done if the flag make_fit=True
